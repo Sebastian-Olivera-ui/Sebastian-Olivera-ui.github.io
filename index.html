@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Sebastian Olivera - Mi Información</title>
     <style>
         * {
             margin: 0;
@@ -14,30 +14,37 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: #e0e0e0;
+            background-color: #0f1419;
         }
 
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a3a52 0%, #0d1f2d 100%);
             color: white;
-            padding: 2rem 0;
+            padding: 3rem 0;
             text-align: center;
+            border-bottom: 4px solid #2196F3;
         }
 
         header h1 {
             font-size: 2.5rem;
             margin-bottom: 0.5rem;
+            color: #64B5F6;
         }
 
         header p {
             font-size: 1.1rem;
             opacity: 0.9;
+            color: #90CAF9;
         }
 
         nav {
-            background-color: #333;
+            background-color: #1a2332;
             padding: 1rem;
-            sticky: top;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid #2196F3;
         }
 
         nav ul {
@@ -49,27 +56,28 @@
         }
 
         nav a {
-            color: white;
+            color: #90CAF9;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
         }
 
         nav a:hover {
-            color: #667eea;
+            color: #64B5F6;
         }
 
         section {
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
+            border-bottom: 2px solid #1e3a5f;
         }
 
         section h2 {
             font-size: 2rem;
             margin-bottom: 1.5rem;
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
+            color: #64B5F6;
+            border-bottom: 3px solid #2196F3;
             padding-bottom: 0.5rem;
         }
 
@@ -77,102 +85,161 @@
             font-size: 1rem;
             line-height: 1.8;
             margin-bottom: 1rem;
-            color: #555;
+            color: #b0bec5;
         }
 
         #about {
-            background-color: #f9f9f9;
+            background: linear-gradient(135deg, #0f1f2e 0%, #1a2f3f 100%);
         }
 
-        #features {
-            background-color: white;
+        #classmates {
+            background: linear-gradient(135deg, #1a2f3f 0%, #0f1f2e 100%);
         }
 
-        #services {
-            background-color: #f9f9f9;
+        #teachers {
+            background: linear-gradient(135deg, #0f1f2e 0%, #1a2f3f 100%);
         }
 
-        .features-grid {
+        #contact {
+            background: linear-gradient(135deg, #1a2f3f 0%, #0f1f2e 100%);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .about-text {
+            background-color: rgba(33, 150, 243, 0.1);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .classmates-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
 
-        .feature-card {
-            background: white;
+        .classmate-card {
+            background: linear-gradient(135deg, #1e3a5f 0%, #162946 100%);
             padding: 1.5rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 15px rgba(33, 150, 243, 0.2);
             text-align: center;
+            border: 1px solid #2196F3;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .feature-card h3 {
-            color: #667eea;
+        .classmate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .classmate-card h3 {
+            color: #64B5F6;
             margin-bottom: 1rem;
         }
 
-        .services-list {
-            list-style: none;
-            margin-top: 1.5rem;
+        .classmate-card a {
+            color: #90CAF9;
+            text-decoration: none;
+            font-weight: 5;
+            transition: color 0.3s ease;
         }
 
-        .services-list li {
-            padding: 0.75rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-            color: #555;
+        .classmate-card a:hover {
+            color: #64B5F6;
         }
 
-        .services-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-weight: bold;
-        }
-
-        .testimonials {
+        .teachers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
 
-        .testimonial-card {
-            background: white;
+        .teacher-card {
+            background: linear-gradient(135deg, #1e3a5f 0%, #162946 100%);
             padding: 1.5rem;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 15px rgba(33, 150, 243, 0.2);
+            border-left: 4px solid #2196F3;
+            transition: transform 0.3s ease;
         }
 
-        .testimonial-card p {
-            font-style: italic;
-            margin-bottom: 1rem;
+        .teacher-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.3);
         }
 
-        .testimonial-author {
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-        }
-
-        footer p {
-            color: white;
+        .teacher-card h3 {
+            color: #64B5F6;
             margin-bottom: 0.5rem;
+        }
+
+        .teacher-card p {
+            color: #90CAF9;
+            margin-bottom: 0.5rem;
+        }
+
+        .teacher-card a {
+            display: inline-block;
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .teacher-card a:hover {
+            color: #64B5F6;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            background: linear-gradient(135deg, #1e3a5f 0%, #162946 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196F3;
+        }
+
+        .contact-item h3 {
+            color: #64B5F6;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-item p {
+            color: #b0bec5;
+            line-height: 1.8;
+        }
+
+        .contact-item a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            color: #64B5F6;
         }
 
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 5px;
@@ -180,134 +247,170 @@
             font-weight: 600;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-top: 1rem;
+            border: none;
+            cursor: pointer;
         }
 
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.5);
+        }
+
+        footer {
+            background-color: #0a0f14;
+            color: #90CAF9;
+            text-align: center;
+            padding: 2rem;
+            border-top: 2px solid #2196F3;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            section {
+                padding: 2rem 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Header Section -->
     <header>
-        <h1>Bienvenido a mi página</h1>
-        <p>Descubre más sobre mi</p>
+        <h1>🎓 Sebastian Olivera</h1>
+        <p>Bienvenido a mi página de información</p>
     </header>
 
     <!-- Navigation -->
     <nav>
         <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#services">Contactos</a></li>
-            <li><a href="#testimonials">information about contacts</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#about">Sobre Mí</a></li>
+            <li><a href="#classmates">Compañeros</a></li>
+            <li><a href="#teachers">Profesores</a></li>
+            <li><a href="#contact">Contacto</a></li>
         </ul>
     </nav>
 
-    <!-- Section 1: About -->
+    <!-- Section 1: About Me -->
     <section id="about">
-        <h2>Sobre mi</h2>
-        <p>
-            Welcome to our platform! We are dedicated to providing exceptional experiences and delivering high-quality
-            solutions tailored to meet your needs. Our team of passionate professionals works tirelessly to ensure
-            customer satisfaction and innovation in everything we do.
-        </p>
-        <p>
-            With years of experience in the industry, we've built a reputation for excellence and reliability. Our mission
-            is to empower businesses and individuals to achieve their goals through cutting-edge technology and outstanding service.
-        </p>
-        <a href="#services" class="cta-button">Learn More</a>
-    </section>
-
-    <!-- Section 2: Features -->
-    <section id="features">
-        <h2>Features</h2>
-        <p>Explore the powerful features that make us stand out from the competition.</p>
-        <div class="features-grid">
-            <div class="feature-card">
-                <h3>⚡ Fast Performance</h3>
-                <p>Lightning-fast load times and optimized performance across all devices.</p>
-            </div>
-            <div class="feature-card">
-                <h3>🔒 Secure & Safe</h3>
-                <p>Enterprise-grade security to protect your data and privacy.</p>
-            </div>
-            <div class="feature-card">
-                <h3>📱 Mobile Ready</h3>
-                <p>Fully responsive design that works perfectly on all screen sizes.</p>
-            </div>
-            <div class="feature-card">
-                <h3>🎨 Beautiful Design</h3>
-                <p>Modern, intuitive interface with excellent user experience.</p>
-            </div>
-            <div class="feature-card">
-                <h3>🌍 Global Reach</h3>
-                <p>Access services from anywhere in the world, anytime.</p>
-            </div>
-            <div class="feature-card">
-                <h3>💬 24/7 Support</h3>
-                <p>Dedicated support team ready to help you whenever you need it.</p>
+        <h2>Sobre Mí</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    ¡Hola! Soy Sebastian Olivera, estudiante en la Universidad Católica San Pablo. 
+                    Me apasiona la tecnología y el desarrollo web, con una dedicación especial en crear 
+                    soluciones innovadoras y eficientes.
+                </p>
+                <p>
+                    Mi objetivo es continuar aprendiendo y creciendo como profesional, desarrollando 
+                    habilidades en programación, diseño web y desarrollo de aplicaciones. 
+                    Estoy comprometido con la excelencia académica y profesional.
+                </p>
+                <p>
+                    En mi tiempo libre, disfruto explorando nuevas tecnologías y contribuyendo a 
+                    proyectos colaborativos que generan impacto positivo.
+                </p>
             </div>
         </div>
     </section>
 
-    <!-- Section 3: Services -->
-    <section id="services">
-        <h2>Our Services</h2>
-        <p>We offer a comprehensive range of services designed to meet your business needs:</p>
-        <ul class="services-list">
-            <li>Web Design & Development</li>
-            <li>Mobile Application Development</li>
-            <li>Cloud Solutions & Hosting</li>
-            <li>Data Analytics & Insights</li>
-            <li>Digital Marketing Strategies</li>
-            <li>24/7 Technical Support</li>
-            <li>Custom Software Development</li>
-            <li>Business Consulting</li>
-        </ul>
-        <a href="#contact" class="cta-button">Get Started</a>
-    </section>
-
-    <!-- Section 4: Testimonials -->
-    <section id="testimonials">
-        <h2>Testimonials</h2>
-        <p>See what our satisfied clients have to say about our services.</p>
-        <div class="testimonials">
-            <div class="testimonial-card">
-                <p>"Exceptional service! The team was professional, responsive, and delivered beyond our expectations. Highly recommended!"</p>
-                <div class="testimonial-author">— John Smith, CEO</div>
+    <!-- Section 2: Classmates -->
+    <section id="classmates">
+        <h2>Mis Compañeros de Clase</h2>
+        <p>Conoce a los excelentes compañeros con los que estudio y trabajo en proyectos.</p>
+        <div class="classmates-grid">
+            <div class="classmate-card">
+                <h3>📍 Compañero 1</h3>
+                <p>Nombre del compañero</p>
+                <a href="#" target="_blank">Ver Perfil</a>
             </div>
-            <div class="testimonial-card">
-                <p>"Amazing experience from start to finish. They understood our needs and provided the perfect solution for our business."</p>
-                <div class="testimonial-author">— Sarah Johnson, Marketing Director</div>
+            <div class="classmate-card">
+                <h3>📍 Compañero 2</h3>
+                <p>Nombre del compañero</p>
+                <a href="#" target="_blank">Ver Perfil</a>
             </div>
-            <div class="testimonial-card">
-                <p>"Best decision we made for our company. The results speak for themselves. Great team and great support!"</p>
-                <div class="testimonial-author">— Michael Chen, Business Owner</div>
+            <div class="classmate-card">
+                <h3>📍 Compañero 3</h3>
+                <p>Nombre del compañero</p>
+                <a href="#" target="_blank">Ver Perfil</a>
+            </div>
+            <div class="classmate-card">
+                <h3>📍 Compañero 4</h3>
+                <p>Nombre del compañero</p>
+                <a href="#" target="_blank">Ver Perfil</a>
             </div>
         </div>
     </section>
 
-    <!-- Section 5: Contact -->
+    <!-- Section 3: Teachers -->
+    <section id="teachers">
+        <h2>Mis Profesores</h2>
+        <p>Excelentes maestros que guían mi formación académica y profesional.</p>
+        <div class="teachers-grid">
+            <div class="teacher-card">
+                <h3>👨‍🏫 Profesor 1</h3>
+                <p><strong>Asignatura:</strong> [Nombre de la asignatura]</p>
+                <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
+            </div>
+            <div class="teacher-card">
+                <h3>👨‍🏫 Profesor 2</h3>
+                <p><strong>Asignatura:</strong> [Nombre de la asignatura]</p>
+                <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
+            </div>
+            <div class="teacher-card">
+                <h3>👨‍🏫 Profesor 3</h3>
+                <p><strong>Asignatura:</strong> [Nombre de la asignatura]</p>
+                <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
+            </div>
+            <div class="teacher-card">
+                <h3>👨‍🏫 Profesor 4</h3>
+                <p><strong>Asignatura:</strong> [Nombre de la asignatura]</p>
+                <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Contact -->
     <section id="contact">
-        <h2>Contact Us</h2>
-        <p>Estas listo? </p>
-        <p><strong>Email:</strong> Sebastian.olivera@ucsp.edu.pe </p>
-        <p><strong>Phone:</strong> +51 931099267</p>
-        <p><strong>Address:</strong> Universidad Católica San Pablo </p>
-        <p>
-            Follow us on social media for updates, news, and special offers. We look forward to connecting with you and helping your business succeed.
-        </p>
-        <a href="mailto:info@mywebsite.com" class="cta-button">Send us an Email</a>
+        <h2>Contacto</h2>
+        <p>¿Tienes alguna pregunta o deseas ponerte en contacto conmigo? Aquí está mi información de contacto.</p>
+        <div class="contact-info">
+            <div class="contact-item">
+                <h3>📧 Email</h3>
+                <p><a href="mailto:Sebastian.olivera@ucsp.edu.pe">Sebastian.olivera@ucsp.edu.pe</a></p>
+            </div>
+            <div class="contact-item">
+                <h3>📱 Teléfono</h3>
+                <p><a href="tel:+51931099267">+51 931 099 267</a></p>
+            </div>
+            <div class="contact-item">
+                <h3>📍 Dirección</h3>
+                <p>Universidad Católica San Pablo<br>Arequipa, Perú</p>
+            </div>
+            <div class="contact-item">
+                <h3>🔗 Redes Sociales</h3>
+                <p>
+                    <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a> | 
+                    <a href="https://github.com/" target="_blank">GitHub</a> | 
+                    <a href="https://instagram.com/" target="_blank">Instagram</a>
+                </p>
+            </div>
+        </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 My Website. All rights reserved.</p>
-        <p>Designed with ❤️ for you</p>
+        <p>&copy; 2026 Sebastian Olivera. Todos los derechos reservados.</p>
+        <p>Diseñado con 💙 desde Arequipa</p>
     </footer>
 </body>
 </html>
