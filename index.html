@@ -479,46 +479,81 @@
     </footer>
 
     <script>
-        // Contador usando CountAPI (https://countapi.xyz/) y fallback a localStorage si falla
+        // Contador usando CountAPI (https://countapi.xyz/)
+        // Ahora mostramos y actualizamos el contador de forma GLOBAL y compartida para todos los usuarios.
         (function() {
             const namespace = 'sebastian-olivera-ui.github.io';
             const key = 'visits';
-            const apiUrl = `https://api.countapi.xyz/hit/${encodeURIComponent(namespace)}/${encodeURIComponent(key)}`;
+            const apiHit = `https://api.countapi.xyz/hit/${encodeURIComponent(namespace)}/${encodeURIComponent(key)}`;
+            const apiGet = `https://api.countapi.xyz/get/${encodeURIComponent(namespace)}/${encodeURIComponent(key)}`;
             const visitEl = document.getElementById('visit-count');
-            const localKey = 'visits_fallback_v1';
             const resetBtn = document.getElementById('reset-local');
 
             function setCount(n) {
                 if (visitEl) visitEl.textContent = n.toLocaleString();
             }
 
-            function useLocalFallback() {
-                let n = parseInt(localStorage.getItem(localKey) || '0', 10);
-                n = n + 1;
-                localStorage.setItem(localKey, String(n));
-                setCount(n);
+            function showUnavailable() {
+                if (visitEl) visitEl.textContent = 'No disponible';
             }
 
-            // Intentar API pública
-            fetch(apiUrl)
+            // Intentamos incrementar el contador global con /hit
+            fetch(apiHit)
                 .then(res => res.json())
                 .then(data => {
                     if (data && typeof data.value === 'number') {
                         setCount(data.value);
+                        // Si la API funciona, ocultamos el botón de "reset local" porque ya no usamos fallback local
+                        if (resetBtn) resetBtn.style.display = 'none';
                     } else {
-                        useLocalFallback();
+                        // Si /hit no devuelve el valor esperado, intentamos solo obtener el valor sin incrementar
+                        return fetch(apiGet).then(r => r.json()).then(d => {
+                            if (d && typeof d.value === 'number') {
+                                setCount(d.value);
+                                if (resetBtn) resetBtn.style.display = 'none';
+                            } else {
+                                showUnavailable();
+                            }
+                        }).catch(() => showUnavailable());
                     }
                 })
                 .catch(() => {
-                    useLocalFallback();
+                    // Si /hit falla (problema de red o CORS), intentamos /get para al menos mostrar el contador global sin incrementar
+                    fetch(apiGet)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && typeof data.value === 'number') {
+                                setCount(data.value);
+                                if (resetBtn) resetBtn.style.display = 'none';
+                            } else {
+                                showUnavailable();
+                            }
+                        })
+                        .catch(() => {
+                            // No hay API disponible: mostramos mensaje y dejamos el botón visible (opcional)
+                            showUnavailable();
+                        });
                 });
 
-            // Reset local counter (solo afecta a tu navegador)
+            // Nota: el botón "Reset local" ya no modifica un valor local por defecto.
+            // Aquí lo usamos solo para permitir al autor (tú) resetear el contador público a cero si lo deseas.
+            // Advertencia: CountAPI acepta la operación /set públicamente, así que cualquiera que conozca la URL podría cambiarlo.
             if (resetBtn) {
                 resetBtn.addEventListener('click', function() {
-                    localStorage.removeItem(localKey);
-                    // Actualiza la UI inmediatamente y no toca la API pública
-                    setCount(0);
+                    if (!confirm('¿Deseas reiniciar el contador público a 0? Esta acción afecta a todos los visitantes.')) return;
+                    const apiSet = `https://api.countapi.xyz/set/${encodeURIComponent(namespace)}/${encodeURIComponent(key)}?value=0`;
+                    fetch(apiSet)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && typeof data.value === 'number') {
+                                setCount(data.value);
+                                alert('Contador reiniciado a 0.');
+                                if (resetBtn) resetBtn.style.display = 'none';
+                            } else {
+                                alert('No se pudo reiniciar el contador.');
+                            }
+                        })
+                        .catch(() => alert('No se pudo reiniciar el contador.'));
                 });
             }
         })();
