@@ -438,8 +438,12 @@
                 <div id="visit-count" class="visits-counter">—</div>
             </div>
             <div>
-                <button id="reset-local" class="cta-button" style="background: #e74c3c;">Reset local</button>
-                <p style="font-size:0.9rem;color:#777;margin-top:0.5rem;">Si la API pública no está disponible, el contador usa un valor local en tu navegador.</p>
+                <!-- El botón de reset queda oculto por defecto. Se muestra solo si se desbloquea con un token de administrador. -->
+                <button id="reset-local" class="cta-button" style="background: #e74c3c; display:none;">Reset público</button>
+                <div style="margin-top:0.5rem;">
+                    <a href="#" id="unlock-reset" style="font-size:0.9rem;color:#e74c3c;">Mostrar opción de reinicio (administrador)</a>
+                    <p style="font-size:0.9rem;color:#777;margin-top:0.5rem;">Si la API pública no está disponible, el contador mostrará "No disponible". El reinicio público está protegido por un token de administrador.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -480,7 +484,9 @@
 
     <script>
         // Contador usando CountAPI (https://countapi.xyz/)
-        // Ahora mostramos y actualizamos el contador de forma GLOBAL y compartida para todos los usuarios.
+        // Protegemos el reset con un flujo simple: el botón está oculto y solo se muestra si el administrador
+        // ingresa el token correcto. El token no se almacena en texto claro: el código compara el SHA-256
+        // del token ingresado con el hash almacenado en la página.
         (function() {
             const namespace = 'sebastian-olivera-ui.github.io';
             const key = 'visits';
@@ -488,6 +494,17 @@
             const apiGet = `https://api.countapi.xyz/get/${encodeURIComponent(namespace)}/${encodeURIComponent(key)}`;
             const visitEl = document.getElementById('visit-count');
             const resetBtn = document.getElementById('reset-local');
+            const unlockLink = document.getElementById('unlock-reset');
+
+            // CONFIGURA AQUÍ: SHA-256 hex del token de administrador. Reemplaza la cadena por la tuya.
+            // Cómo generar el SHA-256 (en la consola del navegador):
+            //  (async () => {
+            //    const enc = new TextEncoder();
+            //    const data = enc.encode('TU_TOKEN_AQUI');
+            //    const hash = await crypto.subtle.digest('SHA-256', data);
+            //    console.log(Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join(''));
+            //  })();
+            const adminHash = 'REPLACE_WITH_SHA256_HEX';
 
             function setCount(n) {
                 if (visitEl) visitEl.textContent = n.toLocaleString();
@@ -497,20 +514,16 @@
                 if (visitEl) visitEl.textContent = 'No disponible';
             }
 
-            // Intentamos incrementar el contador global con /hit
+            // Incrementamos el contador global con /hit. Si falla, intentamos /get.
             fetch(apiHit)
                 .then(res => res.json())
                 .then(data => {
                     if (data && typeof data.value === 'number') {
                         setCount(data.value);
-                        // Si la API funciona, ocultamos el botón de "reset local" porque ya no usamos fallback local
-                        if (resetBtn) resetBtn.style.display = 'none';
                     } else {
-                        // Si /hit no devuelve el valor esperado, intentamos solo obtener el valor sin incrementar
                         return fetch(apiGet).then(r => r.json()).then(d => {
                             if (d && typeof d.value === 'number') {
                                 setCount(d.value);
-                                if (resetBtn) resetBtn.style.display = 'none';
                             } else {
                                 showUnavailable();
                             }
@@ -518,29 +531,62 @@
                     }
                 })
                 .catch(() => {
-                    // Si /hit falla (problema de red o CORS), intentamos /get para al menos mostrar el contador global sin incrementar
                     fetch(apiGet)
                         .then(res => res.json())
                         .then(data => {
                             if (data && typeof data.value === 'number') {
                                 setCount(data.value);
-                                if (resetBtn) resetBtn.style.display = 'none';
                             } else {
                                 showUnavailable();
                             }
                         })
                         .catch(() => {
-                            // No hay API disponible: mostramos mensaje y dejamos el botón visible (opcional)
                             showUnavailable();
                         });
                 });
 
-            // Nota: el botón "Reset local" ya no modifica un valor local por defecto.
-            // Aquí lo usamos solo para permitir al autor (tú) resetear el contador público a cero si lo deseas.
-            // Advertencia: CountAPI acepta la operación /set públicamente, así que cualquiera que conozca la URL podría cambiarlo.
+            // Ocultar el botón de reset por defecto (ya en HTML se oculta con CSS inline).
+
+            // Función auxiliar: calcula SHA-256 hex de una cadena
+            async function sha256Hex(str) {
+                const enc = new TextEncoder();
+                const data = enc.encode(str);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            }
+
+            // Flujo de "desbloqueo" para mostrar el botón de reset
+            if (unlockLink) {
+                unlockLink.addEventListener('click', async function (e) {
+                    e.preventDefault();
+                    if (!adminHash || adminHash.startsWith('REPLACE')) {
+                        alert('El token de administrador no está configurado. Edita el archivo y coloca el SHA-256 hex de tu token en la variable adminHash.');
+                        return;
+                    }
+                    const token = prompt('Introduce el token de administrador para mostrar la opción de reinicio:');
+                    if (!token) return;
+                    try {
+                        const h = await sha256Hex(token);
+                        if (h === adminHash) {
+                            // mostrar botón de reset y ocultar link de desbloqueo
+                            if (resetBtn) resetBtn.style.display = 'inline-block';
+                            unlockLink.style.display = 'none';
+                            alert('Desbloqueado: ahora puedes reiniciar el contador público si lo confirmas.');
+                        } else {
+                            alert('Token incorrecto.');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error al verificar el token.');
+                    }
+                });
+            }
+
+            // Evento de reset: solo posible si el botón está visible (es decir, se desbloqueó previamente)
             if (resetBtn) {
                 resetBtn.addEventListener('click', function() {
-                    if (!confirm('¿Deseas reiniciar el contador público a 0? Esta acción afecta a todos los visitantes.')) return;
+                    if (!confirm('¿Deseas reiniciar el contador público a 0? Esta acción afectará a todos los visitantes.')) return;
                     const apiSet = `https://api.countapi.xyz/set/${encodeURIComponent(namespace)}/${encodeURIComponent(key)}?value=0`;
                     fetch(apiSet)
                         .then(res => res.json())
@@ -548,7 +594,9 @@
                             if (data && typeof data.value === 'number') {
                                 setCount(data.value);
                                 alert('Contador reiniciado a 0.');
-                                if (resetBtn) resetBtn.style.display = 'none';
+                                // ocultar el botón de nuevo hasta siguiente desbloqueo
+                                resetBtn.style.display = 'none';
+                                if (unlockLink) unlockLink.style.display = 'inline';
                             } else {
                                 alert('No se pudo reiniciar el contador.');
                             }
